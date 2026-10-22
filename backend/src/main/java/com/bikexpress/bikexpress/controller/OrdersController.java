@@ -2,6 +2,8 @@ package com.bikexpress.bikexpress.controller;
 
 import com.bikexpress.bikexpress.model.OrderDtos.OrderReqAndRespDto;
 import com.bikexpress.bikexpress.service.OrderService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,13 +23,23 @@ public class OrdersController {
     private final OrderService orderService;
 
     @PostMapping("/addOrder")
-    public ResponseEntity<Void> addOrder(@RequestBody OrderReqAndRespDto orderReqAndRespDto){
+    public ResponseEntity<Void> addOrder(@RequestBody OrderReqAndRespDto orderReqAndRespDto, HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        if (session != null && "USER".equals(session.getAttribute("BIKEXPRESS_ROLE"))
+                && !session.getAttribute("BIKEXPRESS_USER_ID").equals(orderReqAndRespDto.getUserId())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         orderService.addOrder(orderReqAndRespDto);
         return  new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping("/getOrdersByUserId/{userId}")
-    public ResponseEntity<List<OrderReqAndRespDto>> getOrders(@PathVariable Integer userId){
+    public ResponseEntity<List<OrderReqAndRespDto>> getOrders(@PathVariable Integer userId, HttpServletRequest request){
+        HttpSession session = request.getSession(false);
+        if (session != null && "USER".equals(session.getAttribute("BIKEXPRESS_ROLE"))
+                && !java.util.Objects.equals(session.getAttribute("BIKEXPRESS_USER_ID"), userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
         return ResponseEntity.ok(orderService.getAllOrderByUserId(userId));
     }
 

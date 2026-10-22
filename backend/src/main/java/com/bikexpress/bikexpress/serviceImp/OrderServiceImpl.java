@@ -33,8 +33,12 @@ public class OrderServiceImpl implements OrderService {
       Integer userId = orderReqAndRespDto.getUserId();
         UserEntity userEntity = userRepo.findById(userId).orElseThrow(() -> new NotFoundException("User Not Found"));
         BikeEntity bikeEntity = bikeRepo.findById(orderReqAndRespDto.getBikeId()).orElseThrow(() -> new NotFoundException(("Bike Not Found")));
-        OrdersEntity ordersEntity = ordersRepo.save(OrderMapper.toOrderEntity(orderReqAndRespDto));
+        OrdersEntity ordersEntity = OrderMapper.toOrderEntity(orderReqAndRespDto);
+        ordersEntity.setUser(userEntity);
+        ordersEntity.setBike(bikeEntity);
+        ordersRepo.save(ordersEntity);
         bikeEntity.setStockQuantity(bikeEntity.getStockQuantity()-1);
+        bikeRepo.save(bikeEntity);
         }
 
 

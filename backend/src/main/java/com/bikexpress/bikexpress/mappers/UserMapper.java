@@ -21,6 +21,7 @@ public class UserMapper {
 
     public static UserResponseDto toUserResponseDto(UserEntity userEntity) {
         return UserResponseDto.builder()
+                .userId(userEntity.getUserId())
                 .name(userEntity.getName())
                 .email(userEntity.getEmail())
                 .phoneNumber(userEntity.getPhone())

@@ -24,6 +24,7 @@ public class BikeMapper {
 
     public static UserBikeReqAndRespDto toUserResponse(BikeEntity bikeEntity){
         return  UserBikeReqAndRespDto.builder()
+                .bikeId(bikeEntity.getBikeId())
                 .bikeName(bikeEntity.getBikeName())
                 .model(bikeEntity.getModel())
                 .year(bikeEntity.getYear())

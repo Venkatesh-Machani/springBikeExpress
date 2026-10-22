@@ -15,6 +15,8 @@ import java.math.BigDecimal;
 @SuperBuilder
 public class UserBikeReqAndRespDto {
 
+    private Integer bikeId;
+
     @NotBlank
     private String bikeName;
 

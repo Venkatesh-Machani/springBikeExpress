@@ -13,5 +13,7 @@ public interface BikeRepo extends JpaRepository<BikeEntity,Integer> {
 
     BikeEntity findByModel(String model);
 
+    java.util.List<BikeEntity> findByBikeNameContainingIgnoreCaseOrModelContainingIgnoreCase(String bikeName, String model);
+
     void deleteByModel(String bikeModel);
 }

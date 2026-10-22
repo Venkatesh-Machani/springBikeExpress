@@ -34,6 +34,11 @@ public class BikeController {
         return  ResponseEntity.ok(bikeService.getAllBikes());
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<UserBikeReqAndRespDto>> searchBikes(@RequestParam(defaultValue = "") String query) {
+        return ResponseEntity.ok(bikeService.searchBikes(query));
+    }
+
     @GetMapping("/getBikeForAdmin/{id}")
     public  ResponseEntity<AdminBikeReqAndRespDto> getAllBikesForAdmin(@PathVariable Integer id){
         return ResponseEntity.ok(bikeService.getBikeForAdmin(id));
@@ -44,7 +49,7 @@ public class BikeController {
         return ResponseEntity.ok(bikeService.updateBike(adminBikeReqAndRespDto));
     }
 
-    @DeleteMapping("/deleteBike")
+    @DeleteMapping("/deleteBike/{bikeModel}")
     public ResponseEntity<Void> deleteBike(@PathVariable String bikeModel){
         bikeService.deleteBike(bikeModel);
         return ResponseEntity.noContent().build();  

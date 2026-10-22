@@ -23,7 +23,10 @@ public class OrderMapper {
     public static OrderReqAndRespDto toOrderRespDto(OrdersEntity ordersEntity){
         return OrderReqAndRespDto.builder()
                 .orderId(ordersEntity.getOrderId())
+                .userId(ordersEntity.getUser().getUserId())
+                .bikeId(ordersEntity.getBike().getBikeId())
                 .orderDate(ordersEntity.getOrderDate())
+                .orderStatus(ordersEntity.getOrderStatus())
                 .paymentStatus(ordersEntity.getPaymentStatus())
                 .shippingAddress(ordersEntity.getShippingAddress())
                 .build();

@@ -14,6 +14,8 @@ public interface BikeService {
 
     public List<UserBikeReqAndRespDto> getAllBikes();
 
+    public List<UserBikeReqAndRespDto> searchBikes(String query);
+
     public AdminBikeReqAndRespDto getBikeForAdmin(Integer id);
 
     public AdminBikeReqAndRespDto updateBike(AdminBikeReqAndRespDto adminBikeReqAndRespDto);

@@ -51,6 +51,16 @@ public class BikeServiceImpl implements BikeService {
     }
 
     @Override
+    public List<UserBikeReqAndRespDto> searchBikes(String query) {
+        String term = query == null ? "" : query.trim();
+        if (term.isEmpty()) return getAllBikes();
+        return bikeRepo.findByBikeNameContainingIgnoreCaseOrModelContainingIgnoreCase(term, term)
+                .stream()
+                .map(BikeMapper::toUserResponse)
+                .toList();
+    }
+
+    @Override
     public AdminBikeReqAndRespDto getBikeForAdmin(Integer bikeId) {
         return BikeMapper.toAdminResponse(bikeRepo.findById(bikeId).orElseThrow(()->new NotFoundException("Bike Not Found")));
     }

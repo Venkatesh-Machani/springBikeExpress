@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<UserResponseDto> update(UserCreationAndUpdateRequestDto userCreationAndUpdateRequestDto) {
+    public ResponseEntity<UserResponseDto> update(@RequestBody UserCreationAndUpdateRequestDto userCreationAndUpdateRequestDto) {
         return ResponseEntity.ok(userService.updateUser(userCreationAndUpdateRequestDto));
     }
 
@@ -39,7 +39,7 @@ public class UserController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @DeleteMapping("/deleteUser")
+    @DeleteMapping("/deleteUser/{email}")
     public ResponseEntity<Void> deleteUser(@PathVariable String email){
         userService.deleteUser(email);
         return ResponseEntity.noContent().build();

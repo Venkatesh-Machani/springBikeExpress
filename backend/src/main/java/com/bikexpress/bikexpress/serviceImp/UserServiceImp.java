@@ -7,6 +7,7 @@ import com.bikexpress.bikexpress.model.userDtos.UserCreationAndUpdateRequestDto;
 import com.bikexpress.bikexpress.model.userDtos.UserResponseDto;
 import com.bikexpress.bikexpress.repository.UserRepo;
 import com.bikexpress.bikexpress.service.UserService;
+import com.bikexpress.bikexpress.security.PasswordCodec;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +25,9 @@ public class UserServiceImp implements UserService {
         if (userRepo.existsByEmail(userCreationAndUpdateRequestDto.getEmail())) {
             throw new RuntimeException("email already exists");
         }
-        UserEntity user = userRepo.save(UserMapper.toUserEntity(userCreationAndUpdateRequestDto));
+        UserEntity entity = UserMapper.toUserEntity(userCreationAndUpdateRequestDto);
+        entity.setPassword(PasswordCodec.encode(userCreationAndUpdateRequestDto.getPassword()));
+        UserEntity user = userRepo.save(entity);
         return UserMapper.toUserResponseDto(user);
     }
 
@@ -44,30 +47,11 @@ public class UserServiceImp implements UserService {
     public UserResponseDto updateUser(UserCreationAndUpdateRequestDto userCreationAndUpdateRequestDto){
         UserEntity userEntity = userRepo.findByEmail(userCreationAndUpdateRequestDto.getEmail())
                 .orElseThrow(() -> new NotFoundException(("USER NOT FOUND WITH " + userCreationAndUpdateRequestDto.getEmail())));
-        Field[] declaredFields = userCreationAndUpdateRequestDto.getClass().getDeclaredFields();
-        for(Field field : declaredFields){
-            try {
-                field.setAccessible(true);
-                if("userId".equalsIgnoreCase(field.getName())){
-                    continue;
-                }
-                Object value = field.get(userCreationAndUpdateRequestDto);
-                if(value != null){
-                    Field fieldEntity;
-                    try {
-
-                        fieldEntity = userEntity.getClass().getDeclaredField(field.getName());
-                    } catch (NoSuchFieldException e) {
-                        throw new RuntimeException(e);
-                    }
-                    fieldEntity.setAccessible(true);
-                    if(fieldEntity.getType().isAssignableFrom(field.getType())){
-                        fieldEntity.set(userEntity, value);
-                    }
-                }
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
+        if (userCreationAndUpdateRequestDto.getName() != null) userEntity.setName(userCreationAndUpdateRequestDto.getName());
+        if (userCreationAndUpdateRequestDto.getPhoneNumber() != null) userEntity.setPhone(userCreationAndUpdateRequestDto.getPhoneNumber());
+        if (userCreationAndUpdateRequestDto.getAddress() != null) userEntity.setAddress(userCreationAndUpdateRequestDto.getAddress());
+        if (userCreationAndUpdateRequestDto.getPassword() != null && !userCreationAndUpdateRequestDto.getPassword().isBlank()) {
+            userEntity.setPassword(PasswordCodec.encode(userCreationAndUpdateRequestDto.getPassword()));
         }
         UserEntity user = userRepo.save(userEntity);
         return UserMapper.toUserResponseDto(user);
