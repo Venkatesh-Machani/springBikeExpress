@@ -29,4 +29,6 @@ public class OrderReqAndRespDto {
 
     private  String shippingAddress;
 
+    private  Double totalAmount;
+
 }

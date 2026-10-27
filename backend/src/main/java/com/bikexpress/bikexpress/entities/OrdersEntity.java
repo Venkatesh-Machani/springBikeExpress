@@ -44,4 +44,7 @@ private PaymentStatus paymentStatus;
 @Column(name = "shipping_address")
 private String shippingAddress;
 
+@Column(name = "total_amount")
+private Double totalAmount;
+
 }

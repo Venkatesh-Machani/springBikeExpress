@@ -11,12 +11,11 @@ public class OrderMapper {
 
     public static OrdersEntity toOrderEntity(OrderReqAndRespDto orderReqAndRespDto){
         return OrdersEntity.builder()
-                .user(new UserEntity(orderReqAndRespDto.getUserId()))
-                .bike(new BikeEntity(orderReqAndRespDto.getBikeId()))
                 .orderDate(LocalDateTime.now())
                 .orderStatus(orderReqAndRespDto.getOrderStatus())
                 .paymentStatus(orderReqAndRespDto.getPaymentStatus())
                 .shippingAddress(orderReqAndRespDto.getShippingAddress())
+                .totalAmount(orderReqAndRespDto.get)
                 .build();
     }
 
