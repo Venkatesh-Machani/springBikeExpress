@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { apiRequest } from './api'
+import { apiRequest, asList, getAllWishlists } from './api'
+import { Brand } from './lib.jsx'
 
 const tabs = [
   { id: 'overview', label: 'Overview', icon: '▦' },
   { id: 'bikes', label: 'Motorcycles', icon: '◈' },
   { id: 'users', label: 'Customers', icon: '♙' },
   { id: 'orders', label: 'Orders', icon: '▤' },
+  { id: 'wishlists', label: 'Wishlists', icon: '♡' },
 ]
 const statuses = ['PENDING', 'CONFIRMED', 'SHIPPING', 'DELIVERED', 'CANCELLED']
 const payments = ['PENDING', 'PAID', 'FAILED', 'REFUNDINPROCESS', 'REFUNDDONE']
@@ -14,7 +16,8 @@ const date = value => value ? new Date(value).toLocaleDateString('en-IN', { day:
 
 export default function AdminDashboard({ session, onLogout }) {
   const [tab, setTab] = useState('overview')
-  const [data, setData] = useState({ bikes: [], users: [], orders: [] })
+  const [data, setData] = useState({ bikes: [], users: [], orders: [], wishlists: [] })
+  const [wishlistError, setWishlistError] = useState('')
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
   const [query, setQuery] = useState('')
@@ -25,16 +28,29 @@ export default function AdminDashboard({ session, onLogout }) {
   const [notice, setNotice] = useState('')
 
   const refresh = useCallback(async () => {
-    setLoading(true); setLoadError('')
-    try {
-      const [bikes, users, orders] = await Promise.all([
-        apiRequest('/api/bikes/getAllBikes'),
-        apiRequest('/api/users/getAllUsers'),
-        apiRequest('/api/orders/getAllOrders'),
-      ])
-      setData({ bikes: bikes || [], users: users || [], orders: orders || [] })
-    } catch (err) { setLoadError(err.message || 'Could not load dashboard data.') }
-    finally { setLoading(false) }
+    setLoading(true); setLoadError(''); setWishlistError('')
+    // Each list loads on its own, so one failing endpoint (e.g. users or orders) can no longer blank out the motorcycles.
+    const jobs = [
+      ['bikes', 'motorcycles', () => apiRequest('/api/bikes/getAllBikes')],
+      ['users', 'customers', () => apiRequest('/api/users/getAllUsers')],
+      ['orders', 'orders', () => apiRequest('/api/orders/getAllOrders')],
+      ['wishlists', 'wishlists', () => getAllWishlists()],
+    ]
+    const results = await Promise.allSettled(jobs.map(([, , run]) => run()))
+    const next = {}, problems = []
+    results.forEach((res, i) => {
+      const [key, label] = jobs[i]
+      if (res.status === 'fulfilled') next[key] = asList(res.value)
+      else {
+        next[key] = []
+        const message = res.reason?.message || 'request failed'
+        if (key === 'wishlists') setWishlistError(message)
+        else problems.push(`${label}: ${message}`)
+        console.warn(`[admin] could not load ${label}`, res.reason)
+      }
+    })
+    setData(next); setLoadError(problems.join(' · '))
+    setLoading(false)
   }, [])
   useEffect(() => { refresh() }, [refresh])
   useEffect(() => {
@@ -58,6 +74,9 @@ export default function AdminDashboard({ session, onLogout }) {
   const totals = useMemo(() => ({ inventory: data.bikes.reduce((sum, bike) => sum + Number(bike.stockQuantity || 0), 0), revenue: data.orders.filter(o => o.paymentStatus === 'PAID').length }), [data])
   const bikes = (bikeSearchResults ?? data.bikes).filter(b => `${b.bikeName} ${b.model}`.toLowerCase().includes(query.trim().toLowerCase()))
   const users = data.users.filter(u => `${u.name} ${u.email}`.toLowerCase().includes(query.toLowerCase()))
+  const userOf = id => data.users.find(u => String(u.userId) === String(id))
+  const bikeOf = id => data.bikes.find(b => String(b.bikeId) === String(id))
+  const wishlists = data.wishlists.filter(w => { const u = userOf(w.userId ?? w.user?.userId), b = bikeOf(w.bikeId ?? w.bike?.bikeId); return `${u?.name} ${u?.email} ${b?.bikeName} ${b?.model}`.toLowerCase().includes(query.toLowerCase()) })
   const orders = data.orders.filter(o => `${o.orderId} ${o.userId} ${o.bikeId} ${o.orderStatus}`.toLowerCase().includes(query.toLowerCase()))
 
   function startCreate(kind) {
@@ -100,14 +119,15 @@ export default function AdminDashboard({ session, onLogout }) {
   }
 
   return <div className="admin-shell">
-    <aside className="admin-sidebar"><a className="brand admin-brand" href="#admin"><span className="brand-mark">↗</span><span>bike<span className="brand-light">express</span></span></a><div className="admin-workspace"><span className="workspace-mark">B</span><span><b>BikeExpress</b><small>ADMIN WORKSPACE</small></span><span className="workspace-dots">•••</span></div><div className="sidebar-label">WORKSPACE</div><nav className="admin-nav">{tabs.map(item => <button key={item.id} className={tab === item.id ? 'admin-nav-item active' : 'admin-nav-item'} onClick={() => { setTab(item.id); setQuery('') }}><span>{item.icon}</span>{item.label}{item.id === 'orders' && data.orders.length > 0 && <small>{data.orders.length}</small>}</button>)}</nav><div className="sidebar-bottom"><div className="admin-online"><i/>Backend connected</div><div className="admin-profile"><span className="profile-avatar">A</span><div><b>{session.name}</b><small>Administrator</small></div><button onClick={onLogout} title="Sign out" aria-label="Sign out">⇥</button></div></div></aside>
+    <aside className="admin-sidebar"><Brand className="admin-brand" href="#admin"/><div className="admin-workspace"><span className="workspace-mark">B</span><span><b>BIKEXPRESS</b><small>ADMIN WORKSPACE</small></span><span className="workspace-dots">•••</span></div><div className="sidebar-label">WORKSPACE</div><nav className="admin-nav">{tabs.map(item => <button key={item.id} className={tab === item.id ? 'admin-nav-item active' : 'admin-nav-item'} onClick={() => { setTab(item.id); setQuery('') }}><span>{item.icon}</span>{item.label}{item.id === 'orders' && data.orders.length > 0 && <small>{data.orders.length}</small>}</button>)}</nav><div className="sidebar-bottom"><div className="admin-online"><i/>Backend connected</div><div className="admin-profile"><span className="profile-avatar">A</span><div><b>{session.name}</b><small>Administrator</small></div><button onClick={onLogout} title="Sign out" aria-label="Sign out">⇥</button></div></div></aside>
     <main className="admin-main" id="admin"><header className="admin-topbar"><div className="admin-breadcrumb">Workspace <span>/</span> <b>{tabs.find(item => item.id === tab)?.label}</b></div><div className="admin-top-actions"><span className="admin-live"><i/> Live inventory</span><button onClick={refresh} className="refresh-button" disabled={loading}>↻ <span>Refresh</span></button><button onClick={onLogout} className="top-logout">Sign out</button></div></header>
-      <section className="admin-content"><div className="admin-page-heading"><div><span className="admin-overline">BIKEEXPRESS ADMIN</span><h1>{tab === 'overview' ? 'Good morning.' : tabs.find(item => item.id === tab)?.label}</h1><p>{tab === 'overview' ? 'Here’s what’s happening in your showroom today.' : `Manage your ${tab === 'bikes' ? 'motorcycle inventory' : tab === 'users' ? 'customer accounts' : 'customer orders'}.`}</p></div>{tab !== 'overview' && <button className="button dark admin-create" onClick={() => startCreate(tab === 'bikes' ? 'bike' : tab === 'users' ? 'user' : 'order')}>＋ <span>{tab === 'bikes' ? 'Add motorcycle' : tab === 'users' ? 'Add customer' : 'Create order'}</span></button>}</div>
+      <section className="admin-content"><div className="admin-page-heading"><div><span className="admin-overline">BIKEXPRESS ADMIN</span><h1>{tab === 'overview' ? 'Good morning.' : tabs.find(item => item.id === tab)?.label}</h1><p>{tab === 'overview' ? 'Here’s what’s happening in your showroom today.' : `Manage your ${tab === 'bikes' ? 'motorcycle inventory' : tab === 'users' ? 'customer accounts' : tab === 'wishlists' ? 'customer wishlists' : 'customer orders'}.`}</p></div>{tab !== 'overview' && tab !== 'wishlists' && <button className="button dark admin-create" onClick={() => startCreate(tab === 'bikes' ? 'bike' : tab === 'users' ? 'user' : 'order')}>＋ <span>{tab === 'bikes' ? 'Add motorcycle' : tab === 'users' ? 'Add customer' : 'Create order'}</span></button>}</div>
         {loadError && <div className="admin-alert"><b>Couldn’t load dashboard data.</b><span>{loadError}</span><button onClick={refresh}>Try again</button></div>}
         {tab === 'overview' && <><div className="admin-stats"><article className="stat-card stat-dark"><span className="stat-icon">◈</span><small>MODELS IN CATALOG</small><strong>{data.bikes.length}</strong><span className="stat-caption">{totals.inventory} units in stock</span></article><article className="stat-card"><span className="stat-icon">♙</span><small>REGISTERED CUSTOMERS</small><strong>{data.users.length}</strong><span className="stat-caption">Customer accounts</span></article><article className="stat-card"><span className="stat-icon">▤</span><small>TOTAL ORDERS</small><strong>{data.orders.length}</strong><span className="stat-caption">{data.orders.filter(o => o.orderStatus === 'PENDING').length} need attention</span></article><article className="stat-card"><span className="stat-icon">₹</span><small>PAID ORDERS</small><strong>{totals.revenue}</strong><span className="stat-caption">Orders marked paid</span></article></div><div className="admin-panels"><section className="admin-panel"><div className="panel-heading"><div><span className="admin-overline">QUICK ACCESS</span><h2>Manage your showroom</h2></div></div><div className="quick-grid"><button onClick={() => setTab('bikes')}><span>◈</span><b>Motorcycles</b><small>Update inventory, pricing and bike details</small><i>↗</i></button><button onClick={() => setTab('users')}><span>♙</span><b>Customers</b><small>View customer accounts and contact details</small><i>↗</i></button><button onClick={() => setTab('orders')}><span>▤</span><b>Orders</b><small>Review orders and update their status</small><i>↗</i></button></div></section><section className="admin-panel recent-panel"><div className="panel-heading"><div><span className="admin-overline">LATEST ACTIVITY</span><h2>Recent orders</h2></div><button onClick={() => setTab('orders')}>View all →</button></div>{data.orders.length ? data.orders.slice(0, 4).map(order => <div className="recent-order" key={order.orderId}><span className="order-number">#{order.orderId}</span><div><b>Customer {order.userId}</b><small>Motorcycle {order.bikeId} · {date(order.orderDate)}</small></div><Status value={order.orderStatus}/></div>) : <div className="admin-empty-small">Orders will appear here when customers place them.</div>}</section></div></>}
         {tab === 'bikes' && <DataPanel title="Motorcycle inventory" count={bikes.length} query={query} setQuery={setQuery} loading={loading}><table><thead><tr><th>MOTORCYCLE</th><th>MODEL YEAR</th><th>PRICE</th><th>STOCK</th><th>ENGINE</th><th>FUEL</th><th/></tr></thead><tbody>{bikes.map(b => <tr key={b.bikeId}><td><div className="table-primary">{b.bikeName}</div><div className="table-secondary">{b.model} · ID {b.bikeId}</div></td><td>{b.year}</td><td>{money(b.price)}</td><td><span className={Number(b.stockQuantity) <= 2 ? 'stock low' : 'stock'}>{b.stockQuantity} units</span></td><td>{b.cc} cc</td><td>{b.fuelType}</td><td><RowActions onEdit={() => startEdit('bike', b)} onDelete={() => remove('bike', b)}/></td></tr>)}</tbody></table>{!bikes.length && <EmptyTable loading={loading || bikeSearchLoading} label="No motorcycles match your search."/>}</DataPanel>}
         {tab === 'users' && <DataPanel title="Customer accounts" count={data.users.length} query={query} setQuery={setQuery} loading={loading}><table><thead><tr><th>CUSTOMER</th><th>PHONE</th><th>ADDRESS</th><th>ACCOUNT ID</th><th/></tr></thead><tbody>{users.map(u => <tr key={u.userId}><td><div className="customer-cell"><span>{(u.name || '?').slice(0,1).toUpperCase()}</span><div><b>{u.name}</b><small>{u.email}</small></div></div></td><td>{u.phoneNumber || '—'}</td><td className="address-cell">{u.address || '—'}</td><td>#{u.userId}</td><td><RowActions onEdit={() => startEdit('user', u)} onDelete={() => remove('user', u)}/></td></tr>)}</tbody></table>{!users.length && <EmptyTable loading={loading} label="No customers match your search."/>}</DataPanel>}
         {tab === 'orders' && <DataPanel title="Order management" count={data.orders.length} query={query} setQuery={setQuery} loading={loading}><table><thead><tr><th>ORDER</th><th>PLACED</th><th>CUSTOMER</th><th>MOTORCYCLE</th><th>ORDER STATUS</th><th>PAYMENT</th><th/></tr></thead><tbody>{orders.map(o => <tr key={o.orderId}><td><b>#{o.orderId}</b></td><td>{date(o.orderDate)}</td><td>Customer #{o.userId}</td><td>Bike #{o.bikeId}</td><td><Status value={o.orderStatus}/></td><td><Status value={o.paymentStatus}/></td><td><RowActions onEdit={() => startEdit('order', o)} onDelete={() => remove('order', o)}/></td></tr>)}</tbody></table>{!orders.length && <EmptyTable loading={loading} label="No orders match your search."/>}</DataPanel>}
+        {tab === 'wishlists' && <DataPanel title="Customer wishlists" count={wishlists.length} query={query} setQuery={setQuery} loading={loading}>{wishlistError && <div className="admin-alert" style={{ margin: 14 }}><b>Wishlist data unavailable.</b><span>{wishlistError} — check the wishlist routes in api.js (ENDPOINTS).</span></div>}<table><thead><tr><th>CUSTOMER</th><th>MOTORCYCLE</th><th>PRICE</th><th>SAVED ON</th></tr></thead><tbody>{wishlists.map((w, i) => { const uid = w.userId ?? w.user?.userId, bid = w.bikeId ?? w.bike?.bikeId, u = userOf(uid) || w.user, b = bikeOf(bid) || w.bike; return <tr key={w.wishlistId ?? w.id ?? i}><td><div className="customer-cell"><span>{(u?.name || '?').slice(0, 1).toUpperCase()}</span><div><b>{u?.name || `Customer #${uid}`}</b><small>{u?.email || `ID ${uid}`}</small></div></div></td><td><div className="table-primary">{b?.bikeName || `Bike #${bid}`}</div><div className="table-secondary">{b?.model}</div></td><td>{b ? money(b.price) : '—'}</td><td>{date(w.createdAt || w.addedAt || w.dateAdded)}</td></tr> })}</tbody></table>{!wishlists.length && <EmptyTable loading={loading} label="No wishlist items yet."/>}</DataPanel>}
       </section>
     </main>
     {editor && <Editor editor={editor} data={data} onClose={() => setEditor(null)} onSubmit={saveEditor} busy={busy}/>}

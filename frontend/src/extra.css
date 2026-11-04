@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;700;800&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap');
+
+/* ---------- brand ---------- */
+.brand{letter-spacing:.05em;font-size:18px}
+.brand-mark{width:34px;height:34px;padding:7px;background:var(--lime);color:#1b1c19;box-shadow:0 0 0 1px #1b1c1922}
+.brand-word{font-weight:800}.brand-light{font-weight:500}
+.login-brand .brand-mark,.admin-brand .brand-mark{box-shadow:none}
+
+/* ---------- classic storefront look ---------- */
+.storefront{--serif:'Playfair Display',Georgia,'Times New Roman',serif;background:#f7f4ed;min-height:100vh;--line:#e4dfd2}
+.storefront h1,.storefront h2,.storefront h3{letter-spacing:-.01em}
+.storefront .hero h1{font-weight:600;letter-spacing:-.02em;font-size:clamp(46px,5.2vw,72px)}
+.storefront .section-top h2,.storefront .newsletter h2,.storefront .story-copy h2{font-weight:600;letter-spacing:-.01em}
+.storefront em{font-style:italic}
+.storefront .header{background:#f7f4ed;position:sticky;top:0;z-index:4;border-bottom:1px solid var(--line)}
+.storefront .trust{background:#f1ede2}
+.storefront .bike-photo,.storefront .hero-visual{border-radius:2px}
+.storefront .bike-photo{box-shadow:0 1px 0 var(--line)}
+.storefront .bike-card{transition:transform .25s}.storefront .bike-card:hover{transform:translateY(-3px)}
+.storefront .button.dark{border-radius:2px;letter-spacing:.04em}
+.storefront .button:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.nav a.active{color:#1b1c19;font-weight:700}
+.nav-count{background:var(--lime);border-radius:9px;font-size:9px;padding:2px 6px;margin-left:5px}
+.icon-btn{width:36px;height:36px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;font-size:18px;position:relative;background:transparent}
+.icon-btn:hover{background:var(--lime);border-color:var(--lime)}
+.mobile-panel{display:none}
+.photo-link{display:block;width:100%;height:100%}
+.photo-link img{width:100%;height:100%;object-fit:cover;filter:saturate(.9);transition:transform .5s;display:block}
+.bike-card:hover .photo-link img{transform:scale(1.04)}
+.bike-name a:hover h3{color:#6f8222}
+a.add{display:grid;place-items:center;font-size:17px}
+a.quick{color:#1b1c19}
+.hero-visual>img{filter:saturate(.85)}
+
+/* ---------- generic page ---------- */
+.page{padding:34px 6.2% 90px;min-height:62vh;position:relative}
+.crumb{display:inline-block;font-size:11px;font-weight:600;color:#5b5d53;margin-bottom:24px}.crumb:hover{color:#1b1c19}
+.page-head{margin-bottom:34px}.page-head h1{font:600 clamp(36px,4.4vw,56px)/1.1 var(--serif);margin:16px 0 8px}.page-head h1 em{color:#919d68}.page-head p{color:var(--muted);font-size:13px;margin:0}
+.storefront .empty{background:#fff;border:1px dashed #d6d1c2;margin:20px 0}
+.empty .button{margin-top:10px}
+.ghost-btn{border:1px solid #cfc9b8;background:transparent;padding:14px 18px;font-size:11px;font-weight:600;border-radius:2px;transition:.2s}
+.ghost-btn:hover{background:#fff;border-color:#1b1c19}.ghost-btn.saved{color:#a8483a;border-color:#e0b8b0;background:#fbf1ee}
+
+/* ---------- bike details ---------- */
+.bike-detail{display:grid;grid-template-columns:1.1fr .9fr;gap:54px;align-items:start}
+.bd-photo{position:relative;aspect-ratio:4/3.1;background:#e5e0d3;overflow:hidden;border:1px solid var(--line)}
+.bd-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.bd-photo .badge{left:16px;top:16px;font-size:8px;padding:8px 11px}
+.bd-kicker{font-size:10px;letter-spacing:.16em;color:#85877d;font-weight:700;text-transform:uppercase}
+.bd-info h1{font:600 clamp(34px,4vw,52px)/1.08 var(--serif);margin:10px 0 6px}
+.bd-sub{margin:0;color:var(--muted);font-size:13px}
+.bd-price{margin:24px 0 18px;padding:18px 0;border-block:1px solid var(--line)}
+.bd-price b{display:block;font:700 34px var(--serif)}.bd-price small{font-size:11px;color:#85877d}
+.bd-desc{font-size:14px;line-height:1.85;color:#55574f;margin:0 0 22px}
+.spec-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:20px}
+.spec-grid div{background:#fcfbf7;padding:14px 15px}.spec-grid small{display:block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#8b8d82}.spec-grid b{display:block;font-size:14px;margin-top:6px;font-weight:600}
+.stock-line{display:flex;align-items:center;gap:9px;font-size:12px;font-weight:600;margin-bottom:22px}
+.stock-line i{width:8px;height:8px;border-radius:50%;background:#8fb64c;box-shadow:0 0 0 4px #8fb64c33}.stock-line.out i{background:#c4584a;box-shadow:0 0 0 4px #c4584a33}
+.bd-actions{display:flex;gap:12px;flex-wrap:wrap}
+.bd-order{padding:16px 26px;font-size:12px;gap:34px;min-width:210px}
+.related{margin-top:80px}.related h2{font:600 30px var(--serif);margin:0 0 22px}.related h2 em{color:#919d68}
+.related-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.related-card div{aspect-ratio:4/3;overflow:hidden;background:#e5e0d3;margin-bottom:12px}
+.related-card img{width:100%;height:100%;object-fit:cover;transition:transform .5s;display:block}.related-card:hover img{transform:scale(1.05)}
+.related-card b,.related-card small{display:block}.related-card b{font:600 16px var(--serif)}.related-card small{font-size:12px;color:var(--muted);margin-top:4px}
+
+/* ---------- checkout ---------- */
+.steps{display:flex;align-items:center;gap:14px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#9a9c91;margin-bottom:28px;flex-wrap:wrap}
+.steps i{width:34px;height:1px;background:#cfc9b8}.steps .done{color:#6f8222}.steps .now{color:#1b1c19;font-weight:700}
+.pay-layout{display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:start}
+.pay-main{display:grid;gap:22px}
+.pay-card{background:#fff;border:1px solid var(--line);padding:26px}
+.pay-card h2{font:600 22px var(--serif);margin:0 0 14px}.pay-sub{font-size:12px;color:var(--muted);margin:-6px 0 18px}
+.pay-card textarea,.upi-field input{width:100%;border:1px solid #dcd7c8;background:#fdfcf9;padding:12px;font:13px 'DM Sans',sans-serif;outline:0;resize:vertical}
+.pay-card textarea:focus,.upi-field input:focus{border-color:#9dae5b;box-shadow:0 0 0 3px #d9f36a40}
+.methods{display:grid;gap:10px}
+.method{display:flex;align-items:center;gap:14px;border:1px solid #e1dccd;padding:13px 16px;cursor:pointer;background:#fff;transition:.15s;position:relative}
+.method:hover{border-color:#b9b39e}.method.active{border-color:#1b1c19;box-shadow:0 0 0 1px #1b1c19;background:#fbfbf2}
+.method input{position:absolute;opacity:0;pointer-events:none}
+.method-logo{min-width:42px;height:42px;border-radius:10px;color:#fff;display:grid;place-items:center;font:800 13px 'Manrope',sans-serif;padding:0 6px}
+.method-text{flex:1}.method-text b{display:block;font-size:14px}.method-text small{font-size:11px;color:#85877d}
+.radio-dot{width:18px;height:18px;border:2px solid #c5bfaa;border-radius:50%;position:relative}
+.method.active .radio-dot{border-color:#1b1c19}.method.active .radio-dot:after{content:'';position:absolute;inset:3px;background:#1b1c19;border-radius:50%}
+.upi-field{display:flex;flex-direction:column;gap:8px;font-size:12px;font-weight:600;margin-top:18px}
+.summary{position:sticky;top:96px}
+.sum-bike{display:flex;gap:14px;padding-bottom:18px;border-bottom:1px solid var(--line);margin-bottom:6px}
+.sum-bike img{width:128px;height:94px;object-fit:cover;flex:none;background:#e5e0d3}
+.sum-bike small,.sum-bike b,.sum-bike span{display:block}.sum-bike small{font-size:10px;color:#85877d;letter-spacing:.06em}.sum-bike b{font:600 18px var(--serif);margin:5px 0}.sum-bike span{font-size:11px;color:var(--muted)}
+.sum-row{display:flex;justify-content:space-between;padding:12px 0;font-size:13px;color:#55574f;border-bottom:1px dashed #e4dfd2}.sum-row b{color:#1b1c19;font-weight:600}.sum-row .free{color:#6f8222}
+.sum-total{display:flex;justify-content:space-between;align-items:center;padding:18px 0 14px}.sum-total span{font-size:13px;font-weight:600}.sum-total b{font:700 26px var(--serif)}
+.pay-btn{width:100%;justify-content:space-between;padding:17px 20px;font-size:12px}.pay-btn:disabled{opacity:.7;cursor:wait}
+.pay-fine{display:block;text-align:center;font-size:10px;color:#8b8d82;margin-top:12px}
+.processing{position:fixed;inset:0;background:#f7f4edeb;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;backdrop-filter:blur(3px)}
+.processing b{font:600 22px var(--serif)}.processing small{font-size:12px;color:var(--muted)}
+.spinner{width:46px;height:46px;border:4px solid #dfe7bd;border-top-color:#1b1c19;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- success ---------- */
+.success-page{overflow:hidden;display:flex;flex-direction:column;align-items:center}
+.success-hero{text-align:center;max-width:640px;display:flex;flex-direction:column;align-items:center;position:relative;z-index:1}
+.ok-check{width:120px;height:120px;margin-bottom:18px;animation:pop .7s cubic-bezier(.2,1.5,.4,1) both}
+.ok-ring{fill:none;stroke:#1b1c19;stroke-width:4;stroke-dasharray:327;stroke-dashoffset:327;animation:draw .9s .15s ease forwards;transform:rotate(-90deg);transform-origin:center}
+.ok-fill{fill:var(--lime);opacity:0;animation:fadein .4s .9s forwards}
+.ok-tick{fill:none;stroke:#1b1c19;stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:70;stroke-dashoffset:70;animation:draw .5s 1.1s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}@keyframes fadein{to{opacity:1}}@keyframes pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.ok-fade{opacity:0;transform:translateY(14px);animation:rise .6s calc(.9s + var(--i)*.15s) ease forwards}
+@keyframes rise{to{opacity:1;transform:none}}
+.success-hero h1{font:600 clamp(36px,5vw,58px)/1.1 var(--serif);margin:14px 0 12px}.success-hero h1 em{color:#919d68}
+.success-hero>p{color:var(--muted);font-size:14px;line-height:1.7;max-width:480px;margin:0}
+.road{position:relative;width:min(560px,92vw);height:74px;overflow:hidden;margin-top:26px}
+.road:after{content:'';position:absolute;bottom:8px;left:0;right:0;height:2px;background:repeating-linear-gradient(90deg,#1b1c19 0 26px,transparent 26px 44px);animation:dash .7s linear infinite}
+@keyframes dash{to{background-position:-44px 0}}
+.road-bike{position:absolute;bottom:14px;left:-90px;width:78px;height:58px;color:#1b1c19;animation:ride 4.2s 1.6s cubic-bezier(.45,.05,.55,.95) infinite}
+@keyframes ride{0%{left:-90px}100%{left:calc(100% + 10px)}}
+.wheel{transform-box:fill-box;transform-origin:center;animation:spin .6s linear infinite}
+.success-card{width:min(640px,100%);margin-top:30px;position:relative;z-index:1}
+.success-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 24px;margin:20px 0}
+.success-grid .wide{grid-column:1/-1}.success-grid dt{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#8b8d82}.success-grid dd{margin:5px 0 0;font-size:14px;font-weight:600}
+.success-actions{display:flex;align-items:center;gap:22px;border-top:1px solid var(--line);padding-top:20px}
+.confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.confetti span{position:absolute;top:-16px;left:var(--x);width:8px;height:14px;background:var(--c);opacity:0;transform:rotate(var(--r));animation:fall var(--d) calc(var(--delay) + .9s) ease-in forwards}
+@keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0)}100%{opacity:0;transform:translateY(560px) rotate(640deg)}}
+
+/* ---------- wishlist / orders ---------- */
+.wish-grid{grid-template-columns:repeat(3,1fr)}
+.wish-actions{display:flex;align-items:center;justify-content:space-between;margin-top:14px}.wish-actions .button{padding:11px 14px;gap:16px}
+.order-list{display:grid;gap:16px}
+.order-card{display:flex;background:#fff;border:1px solid var(--line);transition:box-shadow .2s}.order-card:hover{box-shadow:0 10px 30px #0000000d}
+.order-img{width:230px;flex:none;background:#e5e0d3}.order-img img{width:100%;height:100%;object-fit:cover;display:block}
+.order-body{flex:1;padding:22px 24px;min-width:0}
+.order-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.order-top small{font-size:10px;letter-spacing:.1em;color:#8b8d82}.order-top h3{font:600 22px var(--serif);margin:8px 0 4px}.order-sub{font-size:12px;color:var(--muted)}
+.order-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}.order-chips .status-chip{font-size:10px;padding:6px 10px}
+.order-meta{display:grid;grid-template-columns:auto auto 1fr;gap:34px;margin-top:20px;padding-top:16px;border-top:1px dashed #e4dfd2}
+.order-meta small{display:block;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#8b8d82}.order-meta b{display:block;margin-top:5px;font-size:13px;font-weight:600}
+.storefront .admin-alert{background:#fff2e7;border:1px solid #f1d8c1;padding:12px 14px;display:flex;gap:11px;align-items:center;font-size:12px;margin-bottom:18px}
+
+/* ---------- admin: five tabs on mobile ---------- */
+@media(max-width:680px){.admin-nav{grid-template-columns:repeat(5,1fr)}}
+
+/* ---------- responsive ---------- */
+@media(max-width:1000px){.bike-detail,.pay-layout{grid-template-columns:1fr;gap:30px}.summary{position:static}.wish-grid{grid-template-columns:repeat(2,1fr)}.related-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){
+  .page{padding:24px 5% 70px}
+  .storefront .header{height:64px}
+  .mobile-panel{display:flex;flex-direction:column;position:sticky;top:64px;z-index:4;background:#f7f4ed;border-bottom:1px solid var(--line);padding:6px 5% 12px}
+  .mobile-panel a,.mobile-panel button{padding:13px 0;font-size:13px;border:0;background:none;text-align:left;border-bottom:1px solid #ece8dc}
+  .nav-count{display:none}.signed-in-as{display:none}.header-actions{gap:12px}
+  .spec-grid{grid-template-columns:repeat(2,1fr)}
+  .related-grid{grid-template-columns:1fr 1fr}.related-card:nth-child(3){display:none}
+  .wish-grid{grid-template-columns:1fr 1fr}
+  .order-card{flex-direction:column}.order-img{width:100%;height:190px}.order-meta{grid-template-columns:1fr 1fr;gap:16px}.order-addr{grid-column:1/-1}.order-top{flex-direction:column}.order-chips{justify-content:flex-start}
+  .success-grid{grid-template-columns:1fr}.sum-bike img{width:104px;height:80px}
+  .bd-order{width:100%}
+}
+@media(prefers-reduced-motion:reduce){.confetti,.road-bike,.wheel,.ok-fade{animation:none!important}.ok-fade{opacity:1;transform:none}.ok-ring,.ok-tick{stroke-dashoffset:0;animation:none}.ok-fill{opacity:1;animation:none}}
