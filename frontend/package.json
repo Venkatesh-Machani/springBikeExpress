@@ -1,0 +1,20 @@
+{
+  "name": "bikeexpress-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.7.0",
+    "vite": "^4.5.14"
+  }
+}
