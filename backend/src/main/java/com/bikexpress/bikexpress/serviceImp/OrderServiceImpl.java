@@ -34,18 +34,15 @@ public class OrderServiceImpl implements OrderService {
       Integer userId = orderReqAndRespDto.getUserId();
         UserEntity userEntity = userRepo.findById(userId).orElseThrow(() -> new NotFoundException("User Not Found"));
         BikeEntity bikeEntity = bikeRepo.findById(orderReqAndRespDto.getBikeId()).orElseThrow(() -> new NotFoundException(("Bike Not Found")));
-        OrdersEntity ordersEntity = OrderMapper.toOrderEntity(orderReqAndRespDto);
-        ordersEntity.setUser(userEntity);
-        ordersEntity.setBike(bikeEntity);
-        if(bikeEntity.getStockQuantity() > 0){
-            ordersRepo.save(ordersEntity);
-            bikeEntity.setStockQuantity(bikeEntity.getStockQuantity()-1);
-        }
-        else{
+        if(bikeEntity.getStockQuantity() <= 0){
             throw new BikeOutStock("OUT OF STOCK FOR " + bikeEntity.getBikeName());
         }
-        bikeRepo.save(bikeEntity);
-        }
+        OrdersEntity ordersEntity = OrderMapper.toOrderEntity(orderReqAndRespDto);
+        ordersEntity.setUser(userEntity);
+        bikeEntity.setStockQuantity(bikeEntity.getStockQuantity()-1);
+        ordersEntity.setBike(bikeEntity);
+        ordersRepo.save(ordersEntity);
+    }
 
 
     @Override
@@ -123,6 +120,9 @@ public class OrderServiceImpl implements OrderService {
                 }
 
             } catch (IllegalAccessException e) {
+                System.out.println(e.getLocalizedMessage());
+            }
+            catch (Exception e){
                 throw new NotFoundException(
                         "Failed to update field: " + field.getName());
             }

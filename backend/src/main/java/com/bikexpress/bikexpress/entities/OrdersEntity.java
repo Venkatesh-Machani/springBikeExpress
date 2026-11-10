@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -19,37 +20,37 @@ import java.time.LocalDateTime;
 @Builder
 public class OrdersEntity {
 
-@Column(name = "order_id")
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-private Integer orderId;
+    @Column(name = "order_id")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer orderId;
 
-@ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
-@JoinColumn(name = "user_id", nullable = false)
-private UserEntity user;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 
-@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-@JoinColumn(name = "bike_id", nullable = false)
-private BikeEntity bike;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinColumn(name = "bike_id", nullable = false)
+    private BikeEntity bike;
 
-@Column(name = "order_date")
-private LocalDateTime orderDate;
+    @Column(name = "order_date")
+    private LocalDateTime orderDate;
 
-@Column(name = "total_amount")
-private Double totalAmount;
+    @Column(name = "total_amount")
+    private Double totalAmount;
 
-@Enumerated(EnumType.STRING)
-@Column(name ="order_status")
-private OrderStatus orderStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "order_status")
+    private OrderStatus orderStatus;
 
-@Enumerated(EnumType.STRING)
-@Column(name="payment_status")
-private PaymentStatus paymentStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_status")
+    private PaymentStatus paymentStatus;
 
-@Column(name = "shipping_address")
-private String shippingAddress;
+    @Column(name = "shipping_address")
+    private String shippingAddress;
 
-@Enumerated(EnumType.STRING)
-@Column(name = "payment_method")
-private PaymentMethod paymentMethod;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method")
+    private PaymentMethod paymentMethod;
 }

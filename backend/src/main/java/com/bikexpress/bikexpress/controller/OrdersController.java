@@ -23,18 +23,19 @@ public class OrdersController {
     private final OrderService orderService;
 
     @PostMapping("/addOrder")
-    public ResponseEntity<Void> addOrder(@RequestBody OrderReqAndRespDto orderReqAndRespDto, HttpServletRequest request){
+    public ResponseEntity<Void> addOrder(@RequestBody OrderReqAndRespDto orderReqAndRespDto, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        if (session != null && "USER".equals(session.getAttribute("BIKEXPRESS_ROLE"))
-                && !session.getAttribute("BIKEXPRESS_USER_ID").equals(orderReqAndRespDto.getUserId())) {
+        if (session != null && !"USER".equals(session.getAttribute("BIKEXPRESS_ROLE"))) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+        orderReqAndRespDto.setUserId((Integer) session.getAttribute("BIKEXPRESS_USER_ID"));
         orderService.addOrder(orderReqAndRespDto);
-        return  new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    //2292D28F0334CB3104BB3D1F5F366316
     @GetMapping("/getOrdersByUserId/{userId}")
-    public ResponseEntity<List<OrderReqAndRespDto>> getOrders(@PathVariable Integer userId, HttpServletRequest request){
+    public ResponseEntity<List<OrderReqAndRespDto>> getOrders(@PathVariable Integer userId, HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null && "USER".equals(session.getAttribute("BIKEXPRESS_ROLE"))
                 && !java.util.Objects.equals(session.getAttribute("BIKEXPRESS_USER_ID"), userId)) {
@@ -44,7 +45,7 @@ public class OrdersController {
     }
 
     @GetMapping("/getOrderByOrderId/{orderId}")
-    public  ResponseEntity<OrderReqAndRespDto> getOrderByOrderId(@PathVariable Integer orderId){
+    public ResponseEntity<OrderReqAndRespDto> getOrderByOrderId(@PathVariable Integer orderId) {
         return ResponseEntity.ok(orderService.getOrderByOrderId(orderId));
     }
 
@@ -54,15 +55,15 @@ public class OrdersController {
     }
 
     @PatchMapping("/updateOrder")
-    public  ResponseEntity<OrderReqAndRespDto> updateOrder(@RequestBody OrderReqAndRespDto orderReqAndRespDto){
-        return  ResponseEntity.ok(orderService.updateOrder(orderReqAndRespDto));
+    public ResponseEntity<OrderReqAndRespDto> updateOrder(@RequestBody OrderReqAndRespDto orderReqAndRespDto) {
+        return ResponseEntity.ok(orderService.updateOrder(orderReqAndRespDto));
     }
 
     @DeleteMapping("/deleteOrder/{orderId}")
-    public ResponseEntity<Map<String ,String>> deleteOrder(@PathVariable Integer orderId){
+    public ResponseEntity<Map<String, String>> deleteOrder(@PathVariable Integer orderId, HttpServletRequest request) {
         orderService.deleteOrderByOrderId(orderId);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Order Deleted Successfully");
-        return  ResponseEntity.ok(response);
+        return ResponseEntity.ok(response);
     }
 }

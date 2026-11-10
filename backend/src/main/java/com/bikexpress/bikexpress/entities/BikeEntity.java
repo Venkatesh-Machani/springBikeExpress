@@ -57,7 +57,7 @@ private String image;
 @OneToMany(mappedBy = "bike", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 private List<WishListEntity> wishlist = new ArrayList<>();
 
-@OneToMany(mappedBy = "bike",cascade = CascadeType.ALL)
+@OneToMany(mappedBy = "bike",cascade = {CascadeType.MERGE,CascadeType.REFRESH,CascadeType.DETACH},fetch = FetchType.LAZY)
  private List<OrdersEntity> orders  = new ArrayList<>();
 
     public BikeEntity(Integer bikeId) {
