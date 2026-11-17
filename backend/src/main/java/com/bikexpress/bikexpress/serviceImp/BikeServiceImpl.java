@@ -8,6 +8,7 @@ import com.bikexpress.bikexpress.model.bikeDtos.UserBikeReqAndRespDto;
 import com.bikexpress.bikexpress.repository.BikeRepo;
 import com.bikexpress.bikexpress.service.BikeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,16 +45,16 @@ public class BikeServiceImpl implements BikeService {
     }
 
     @Override
-    public List<UserBikeReqAndRespDto> getAllBikes() {
-        return bikeRepo.findAll().stream()
+    public List<UserBikeReqAndRespDto> getAllBikes(PageRequest pageRequest) {
+        return bikeRepo.findAll(pageRequest).getContent().stream()
                 .map(BikeMapper::toUserResponse)
                 .toList();
     }
 
     @Override
-    public List<UserBikeReqAndRespDto> searchBikes(String query) {
+    public List<UserBikeReqAndRespDto> searchBikes(String query, PageRequest pageRequest) {
         String term = query == null ? "" : query.trim();
-        if (term.isEmpty()) return getAllBikes();
+        if (term.isEmpty()) return getAllBikes(pageRequest);
         return bikeRepo.findByBikeNameContainingIgnoreCaseOrModelContainingIgnoreCase(term, term)
                 .stream()
                 .map(BikeMapper::toUserResponse)

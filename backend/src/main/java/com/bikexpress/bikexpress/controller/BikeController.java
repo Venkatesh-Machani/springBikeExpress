@@ -4,10 +4,12 @@ import com.bikexpress.bikexpress.model.bikeDtos.AdminBikeReqAndRespDto;
 import com.bikexpress.bikexpress.model.bikeDtos.UserBikeReqAndRespDto;
 import com.bikexpress.bikexpress.service.BikeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 
@@ -30,13 +32,16 @@ public class BikeController {
     }
 
     @GetMapping("/getAllBikes")
-    public ResponseEntity<List<UserBikeReqAndRespDto>> getAllBikes(){
-        return  ResponseEntity.ok(bikeService.getAllBikes());
+    public ResponseEntity<List<UserBikeReqAndRespDto>> getAllBikes(@RequestParam (defaultValue = "1")Integer pageNo,
+                                                                   @RequestParam(defaultValue = "5")Integer pageSize){
+        return  ResponseEntity.ok(bikeService.getAllBikes(PageRequest.of(pageNo-1,pageSize)));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<UserBikeReqAndRespDto>> searchBikes(@RequestParam(defaultValue = "") String query) {
-        return ResponseEntity.ok(bikeService.searchBikes(query));
+    public ResponseEntity<List<UserBikeReqAndRespDto>> searchBikes(@RequestParam(defaultValue = "") String query,
+                                                                   @RequestParam(required = false,defaultValue = "1")Integer pageNo,
+                                                                   @RequestParam(required = false,defaultValue = "5")Integer pageSize) {
+        return ResponseEntity.ok(bikeService.searchBikes(query, PageRequest.of(pageNo-1,pageSize)));
     }
 
     @GetMapping("/getBikeForAdmin/{id}")

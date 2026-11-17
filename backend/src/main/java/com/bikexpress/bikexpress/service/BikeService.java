@@ -2,7 +2,7 @@ package com.bikexpress.bikexpress.service;
 
 import com.bikexpress.bikexpress.model.bikeDtos.AdminBikeReqAndRespDto;
 import com.bikexpress.bikexpress.model.bikeDtos.UserBikeReqAndRespDto;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -12,9 +12,9 @@ public interface BikeService {
 
     public UserBikeReqAndRespDto getBike(String model);
 
-    public List<UserBikeReqAndRespDto> getAllBikes();
+    public List<UserBikeReqAndRespDto> getAllBikes(PageRequest pageRequest);
 
-    public List<UserBikeReqAndRespDto> searchBikes(String query);
+    public List<UserBikeReqAndRespDto> searchBikes(String query,  PageRequest pageRequest);
 
     public AdminBikeReqAndRespDto getBikeForAdmin(Integer id);
 
